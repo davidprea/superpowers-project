@@ -47,7 +47,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: superpowers-api
-          property: host
+        sync: false
