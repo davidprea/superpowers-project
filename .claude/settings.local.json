@@ -4,7 +4,8 @@
       "Bash(npm create:*)",
       "Bash(npm install:*)",
       "Bash(npm cache:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(node:*)"
     ]
   }
 }

@@ -2,3 +2,7 @@
 @plugin "daisyui" {
   themes: nord --default;
 }
+
+@theme {
+  --font-sans: "Hanken Grotesk", sans-serif;
+}

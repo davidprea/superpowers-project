@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom'
 import HeroSection from '../../layouts/HeroSection'
+import meshBg from '../../assets/mesh_network.png'
 
 export default function Home() {
   return (
     <div>
       <HeroSection
-        title="Superpowers Project"
+        title="The Superpowers Project"
         subtitle="A consortium of schools pioneering AI-based student portfolio assessment"
+        backgroundImage={meshBg}
       >
         <div className="flex gap-4 justify-center mt-4">
           <Link to="/about" className="btn btn-primary">Learn More</Link>

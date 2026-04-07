@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
 import api from '../../services/api'
 
@@ -19,13 +18,15 @@ function MenuBar({ editor }) {
     if (url) editor.chain().focus().setLink({ href: url }).run()
   }
 
+  const prevent = (e) => e.preventDefault()
+
   return (
     <div className="flex flex-wrap gap-1 p-2 border-b border-base-300 bg-base-200 rounded-t-lg">
-      <button type="button" className={`btn btn-xs ${editor.isActive('heading', { level: 2 }) ? 'btn-primary' : 'btn-ghost'}`} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('heading', { level: 3 }) ? 'btn-primary' : 'btn-ghost'}`} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('bold') ? 'btn-primary' : 'btn-ghost'}`} onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('italic') ? 'btn-primary' : 'btn-ghost'}`} onClick={() => editor.chain().focus().toggleItalic().run()}>I</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('bulletList') ? 'btn-primary' : 'btn-ghost'}`} onClick={() => editor.chain().focus().toggleBulletList().run()}>List</button>
+      <button type="button" className={`btn btn-xs ${editor.isActive('heading', { level: 2 }) ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
+      <button type="button" className={`btn btn-xs ${editor.isActive('heading', { level: 3 }) ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
+      <button type="button" className={`btn btn-xs ${editor.isActive('bold') ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
+      <button type="button" className={`btn btn-xs ${editor.isActive('italic') ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleItalic().run()}>I</button>
+      <button type="button" className={`btn btn-xs ${editor.isActive('bulletList') ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBulletList().run()}>List</button>
       <button type="button" className="btn btn-xs btn-ghost" onClick={addLink}>Link</button>
       <button type="button" className="btn btn-xs btn-ghost" onClick={addImage}>Image</button>
     </div>
@@ -42,8 +43,9 @@ export default function BlogEdit() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Link.configure({ openOnClick: false }),
+      StarterKit.configure({
+        link: { openOnClick: false },
+      }),
       Image,
     ],
     content: '',
