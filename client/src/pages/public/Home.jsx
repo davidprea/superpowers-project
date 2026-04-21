@@ -12,7 +12,7 @@ export default function Home() {
       >
         <div className="flex gap-4 justify-center mt-4">
           <Link to="/about" className="btn btn-primary">Learn More</Link>
-          <Link to="/register" className="btn btn-outline">Join Us</Link>
+          <Link to="/subscribe" className="btn btn-outline">Subscribe</Link>
         </div>
       </HeroSection>
 
@@ -27,7 +27,7 @@ export default function Home() {
           <div className="card bg-base-200">
             <div className="card-body">
               <h2 className="card-title">Share Resources</h2>
-              <p>Access and contribute to a growing library of tools, research, and best practices for portfolio assessment.</p>
+              <p>Access a growing library of tools, research, and best practices for portfolio assessment.</p>
             </div>
           </div>
           <div className="card bg-base-200">

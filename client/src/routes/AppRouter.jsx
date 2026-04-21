@@ -7,21 +7,16 @@ import About from '../pages/public/About'
 import Blog from '../pages/public/Blog'
 import BlogPost from '../pages/public/BlogPost'
 import Login from '../pages/public/Login'
-import Register from '../pages/public/Register'
-import MemberProfile from '../pages/public/MemberProfile'
 import Members from '../pages/public/Members'
-
-// Member pages
-import MemberRoute from './MemberRoute'
-import Resources from '../pages/members/Resources'
-import EditProfile from '../pages/members/EditProfile'
+import Resources from '../pages/public/Resources'
+import NewsletterSignup from '../pages/public/NewsletterSignup'
 
 // Admin pages
 import AdminRoute from './AdminRoute'
 import AdminLayout from '../layouts/AdminLayout'
 import Dashboard from '../pages/admin/Dashboard'
-import AdminUsers from '../pages/admin/Users'
-import AdminUserDetail from '../pages/admin/UserDetail'
+import AdminSubscribers from '../pages/admin/Subscribers'
+import AdminSubscriberDetail from '../pages/admin/SubscriberDetail'
 import AdminTags from '../pages/admin/Tags'
 import AdminBlog from '../pages/admin/BlogManager'
 import AdminBlogEdit from '../pages/admin/BlogEdit'
@@ -37,21 +32,16 @@ export default function AppRouter() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/members" element={<Members />} />
-        <Route path="/members/:id" element={<MemberProfile />} />
-
-        <Route element={<MemberRoute />}>
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/profile/edit" element={<EditProfile />} />
-        </Route>
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/subscribe" element={<NewsletterSignup />} />
       </Route>
 
       <Route element={<AdminRoute />}>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/users/:id" element={<AdminUserDetail />} />
+          <Route path="/admin/subscribers" element={<AdminSubscribers />} />
+          <Route path="/admin/subscribers/:id" element={<AdminSubscriberDetail />} />
           <Route path="/admin/tags" element={<AdminTags />} />
           <Route path="/admin/blog" element={<AdminBlog />} />
           <Route path="/admin/blog/new" element={<AdminBlogEdit />} />

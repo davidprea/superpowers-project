@@ -8,10 +8,6 @@ export default function Resources() {
   const [selectedTag, setSelectedTag] = useState('')
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ title: '', description: '', url: '' })
-  const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -32,24 +28,9 @@ export default function Resources() {
     return matchesSearch && matchesTag
   })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setSubmitting(true)
-    try {
-      await api.post('/resources', form)
-      setMessage('Resource submitted for admin approval.')
-      setForm({ title: '', description: '', url: '' })
-      setShowForm(false)
-    } catch {
-      setMessage('Failed to submit resource.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
   return (
     <div>
-      <HeroSection title="Resource Library" subtitle="Curated resources for consortium members" />
+      <HeroSection title="Resource Library" subtitle="Curated resources for AI-based student portfolio assessment" />
       <section className="py-12 px-4 max-w-4xl mx-auto">
         <div className="flex flex-wrap gap-4 mb-6 items-center">
           <input
@@ -63,26 +44,7 @@ export default function Resources() {
             <option value="">All Tags</option>
             {tags.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
-          <button className="btn btn-primary btn-sm" onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'Cancel' : 'Submit Resource'}
-          </button>
         </div>
-
-        {message && <div className="alert alert-info mb-4"><span>{message}</span></div>}
-
-        {showForm && (
-          <form onSubmit={handleSubmit} className="card bg-base-200 mb-6">
-            <div className="card-body gap-4">
-              <h3 className="card-title">Submit a Resource</h3>
-              <input type="text" placeholder="Title" className="input input-bordered" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
-              <textarea placeholder="Description" className="textarea textarea-bordered" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
-              <input type="url" placeholder="URL" className="input input-bordered" value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} required />
-              <button type="submit" className="btn btn-primary" disabled={submitting}>
-                {submitting ? <span className="loading loading-spinner loading-sm"></span> : 'Submit for Approval'}
-              </button>
-            </div>
-          </form>
-        )}
 
         {loading ? (
           <div className="flex justify-center"><span className="loading loading-spinner loading-lg"></span></div>

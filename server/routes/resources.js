@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const pool = require('../db/pool')
-const { authenticate, requireRole, requireApprovedMember } = require('../middleware/auth')
+const { authenticate, requireRole } = require('../middleware/auth')
 
 // Helper: attach tags to resources
 async function attachTags(resources) {
@@ -16,12 +16,12 @@ async function attachTags(resources) {
   }))
 }
 
-// Members: list approved resources
-router.get('/', authenticate, requireApprovedMember, async (req, res, next) => {
+// Public: list approved resources
+router.get('/', async (req, res, next) => {
   try {
     const { rows } = await pool.query(
-      `SELECT r.id, r.title, r.description, r.url, r.created_at, u.name AS submitter_name
-       FROM resources r LEFT JOIN users u ON r.submitter_id = u.id
+      `SELECT r.id, r.title, r.description, r.url, r.created_at
+       FROM resources r
        WHERE r.approval_status = 'approved' ORDER BY r.created_at DESC`
     )
     res.json(await attachTags(rows))
@@ -34,8 +34,8 @@ router.get('/', authenticate, requireApprovedMember, async (req, res, next) => {
 router.get('/admin', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
     const { status } = req.query
-    let query = `SELECT r.id, r.title, r.description, r.url, r.approval_status, r.created_at, u.name AS submitter_name
-       FROM resources r LEFT JOIN users u ON r.submitter_id = u.id`
+    let query = `SELECT r.id, r.title, r.description, r.url, r.approval_status, r.created_at
+       FROM resources r`
     const params = []
     if (status) {
       params.push(status)
@@ -49,17 +49,16 @@ router.get('/admin', authenticate, requireRole('admin'), async (req, res, next) 
   }
 })
 
-// Submit resource
-router.post('/', authenticate, requireApprovedMember, async (req, res, next) => {
+// Admin: create resource
+router.post('/', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
     const { title, description, url } = req.body
     if (!title || !url) return res.status(400).json({ error: 'Title and URL are required' })
 
-    const status = req.user.role === 'admin' ? 'approved' : 'pending'
     const { rows } = await pool.query(
       `INSERT INTO resources (submitter_id, title, description, url, approval_status)
-       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [req.user.id, title, description || '', url, status]
+       VALUES ($1, $2, $3, $4, 'approved') RETURNING *`,
+      [req.user.id, title, description || '', url]
     )
     res.status(201).json(rows[0])
   } catch (err) {

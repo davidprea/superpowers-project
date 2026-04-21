@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
@@ -15,8 +15,8 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const user = await login(email, password)
-      navigate(user.role === 'admin' ? '/admin' : '/')
+      await login(email, password)
+      navigate('/admin')
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed')
     } finally {
@@ -28,7 +28,7 @@ export default function Login() {
     <div className="flex justify-center py-16 px-4">
       <div className="card w-full max-w-md bg-base-200">
         <div className="card-body">
-          <h2 className="card-title text-2xl justify-center">Login</h2>
+          <h2 className="card-title text-2xl justify-center">Admin Login</h2>
           {error && <div className="alert alert-error"><span>{error}</span></div>}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="form-control w-full">
@@ -43,9 +43,6 @@ export default function Login() {
               {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Login'}
             </button>
           </form>
-          <p className="text-center text-sm mt-2">
-            Don&apos;t have an account? <Link to="/register" className="link link-primary">Register</Link>
-          </p>
         </div>
       </div>
     </div>

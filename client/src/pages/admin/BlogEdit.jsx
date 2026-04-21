@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
+import Link from '@tiptap/extension-link'
 import api from '../../services/api'
 
 function MenuBar({ editor }) {
@@ -14,8 +15,10 @@ function MenuBar({ editor }) {
   }
 
   const addLink = () => {
-    const url = prompt('Link URL:')
-    if (url) editor.chain().focus().setLink({ href: url }).run()
+    let url = prompt('Link URL:')
+    if (!url) return
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url
+    editor.chain().focus().setLink({ href: url, target: '_blank' }).run()
   }
 
   const prevent = (e) => e.preventDefault()
@@ -43,10 +46,9 @@ export default function BlogEdit() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        link: { openOnClick: false },
-      }),
+      StarterKit,
       Image,
+      Link.configure({ openOnClick: false, HTMLAttributes: { target: '_blank', rel: 'noopener noreferrer' } }),
     ],
     content: '',
     editorProps: {

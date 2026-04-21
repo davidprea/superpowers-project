@@ -74,7 +74,7 @@ export default function ResourceManager() {
                         {resource.approval_status}
                       </span>
                     </h3>
-                    <p className="text-sm text-base-content/60">By {resource.submitter_name}</p>
+                    <p className="text-sm text-base-content/60">{new Date(resource.created_at).toLocaleDateString()}</p>
                     <p className="mt-1">{resource.description}</p>
                   </div>
                   <div className="flex gap-1">

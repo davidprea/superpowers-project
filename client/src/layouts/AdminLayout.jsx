@@ -2,7 +2,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 
 const navItems = [
   { path: '/admin', label: 'Dashboard' },
-  { path: '/admin/users', label: 'Users' },
+  { path: '/admin/subscribers', label: 'Subscribers' },
   { path: '/admin/tags', label: 'Tags' },
   { path: '/admin/blog', label: 'Blog' },
   { path: '/admin/resources', label: 'Resources' },

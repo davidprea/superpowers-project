@@ -22,12 +22,11 @@ export default function About() {
           research, we are building a community of practice around portfolio-based assessment
           enhanced by artificial intelligence.
         </p>
-        <h2>Join Us</h2>
+        <h2>Stay Connected</h2>
         <p>
           Whether you are a school looking to transform your assessment practices or an educator
-          interested in following our work, we welcome your participation. Register as an observer
-          to stay informed, or apply for full membership to access all consortium resources and
-          contribute to our collective work.
+          interested in following our work, we welcome your participation. Subscribe to our
+          newsletter to stay informed about consortium news, resources, and developments.
         </p>
       </section>
     </div>

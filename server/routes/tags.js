@@ -3,7 +3,7 @@ const pool = require('../db/pool')
 const { authenticate, requireRole } = require('../middleware/auth')
 
 // Public: list all tags (needed for resource filtering)
-router.get('/', authenticate, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const { rows } = await pool.query('SELECT id, name FROM tags ORDER BY name')
     res.json(rows)

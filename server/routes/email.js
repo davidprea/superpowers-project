@@ -12,9 +12,9 @@ router.post('/preview', async (req, res, next) => {
     if (!tag_ids?.length) return res.status(400).json({ error: 'Select at least one tag' })
 
     const { rows } = await pool.query(
-      `SELECT COUNT(DISTINCT u.id) AS recipient_count
-       FROM users u JOIN user_tags ut ON u.id = ut.user_id
-       WHERE ut.tag_id = ANY($1)`,
+      `SELECT COUNT(DISTINCT ns.id) AS recipient_count
+       FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id
+       WHERE st.tag_id = ANY($1)`,
       [tag_ids]
     )
     res.json({ recipient_count: parseInt(rows[0].recipient_count) })
@@ -32,7 +32,7 @@ router.post('/send', async (req, res, next) => {
     }
 
     const { rows: recipients } = await pool.query(
-      `SELECT DISTINCT u.email FROM users u JOIN user_tags ut ON u.id = ut.user_id WHERE ut.tag_id = ANY($1)`,
+      `SELECT DISTINCT ns.email FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id WHERE st.tag_id = ANY($1)`,
       [tag_ids]
     )
 
