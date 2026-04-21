@@ -9,6 +9,7 @@ const blogRoutes = require('./routes/blog')
 const resourceRoutes = require('./routes/resources')
 const subscriberRoutes = require('./routes/subscribers')
 const emailRoutes = require('./routes/email')
+const memberRoutes = require('./routes/members')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -22,6 +23,7 @@ app.use('/api/blog', blogRoutes)
 app.use('/api/resources', resourceRoutes)
 app.use('/api/subscribers', subscriberRoutes)
 app.use('/api/email', emailRoutes)
+app.use('/api/members', memberRoutes)
 
 app.use(errorHandler)
 

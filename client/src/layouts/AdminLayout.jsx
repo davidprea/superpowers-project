@@ -6,6 +6,7 @@ const navItems = [
   { path: '/admin/tags', label: 'Tags' },
   { path: '/admin/blog', label: 'Blog' },
   { path: '/admin/resources', label: 'Resources' },
+  { path: '/admin/members', label: 'Members' },
   { path: '/admin/email', label: 'Email' },
 ]
 

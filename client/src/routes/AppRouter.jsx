@@ -23,6 +23,7 @@ import AdminBlog from '../pages/admin/BlogManager'
 import AdminBlogEdit from '../pages/admin/BlogEdit'
 import AdminResources from '../pages/admin/ResourceManager'
 import AdminEmail from '../pages/admin/Email'
+import AdminMemberSchools from '../pages/admin/MemberSchools'
 
 export default function AppRouter() {
   return (
@@ -49,6 +50,7 @@ export default function AppRouter() {
           <Route path="/admin/blog/new" element={<AdminBlogEdit />} />
           <Route path="/admin/blog/:id/edit" element={<AdminBlogEdit />} />
           <Route path="/admin/resources" element={<AdminResources />} />
+          <Route path="/admin/members" element={<AdminMemberSchools />} />
           <Route path="/admin/email" element={<AdminEmail />} />
         </Route>
       </Route>
