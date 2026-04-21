@@ -10,6 +10,7 @@ import Login from '../pages/public/Login'
 import Members from '../pages/public/Members'
 import Resources from '../pages/public/Resources'
 import NewsletterSignup from '../pages/public/NewsletterSignup'
+import Unsubscribe from '../pages/public/Unsubscribe'
 
 // Admin pages
 import AdminRoute from './AdminRoute'
@@ -35,6 +36,7 @@ export default function AppRouter() {
         <Route path="/members" element={<Members />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/subscribe" element={<NewsletterSignup />} />
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
       </Route>
 
       <Route element={<AdminRoute />}>

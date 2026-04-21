@@ -1,6 +1,7 @@
 const { Resend } = require('resend')
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@superpowersproject.org'
+const SITE_URL = process.env.SITE_URL || 'http://localhost:5173'
 let resend = null
 
 async function sendEmail({ to, subject, html }) {
@@ -19,14 +20,34 @@ async function sendEmail({ to, subject, html }) {
   })
 }
 
+async function sendConfirmation({ email, first_name }) {
+  const unsubscribeUrl = `${SITE_URL}/unsubscribe?email=${encodeURIComponent(email)}`
+  await sendEmail({
+    to: email,
+    subject: 'Welcome to the Superpowers Project Newsletter',
+    html: `
+      <h2>Thanks for subscribing!</h2>
+      <p>Hi ${first_name},</p>
+      <p>You've been added to the Superpowers Project newsletter. You'll receive updates about our consortium's work in AI-based student portfolio assessment.</p>
+      <p style="margin-top: 2em; font-size: 12px; color: #666;">
+        <a href="${unsubscribeUrl}">Unsubscribe</a> from this newsletter.
+      </p>
+    `,
+  })
+}
+
 async function sendBulkEmail({ emails, subject, body }) {
   for (const email of emails) {
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?email=${encodeURIComponent(email)}`
     await sendEmail({
       to: email,
       subject,
-      html: `<div>${body.replace(/\n/g, '<br>')}</div>`,
+      html: `<div>${body.replace(/\n/g, '<br>')}</div>
+        <p style="margin-top: 2em; font-size: 12px; color: #666;">
+          <a href="${unsubscribeUrl}">Unsubscribe</a> from this newsletter.
+        </p>`,
     })
   }
 }
 
-module.exports = { sendEmail, sendBulkEmail }
+module.exports = { sendEmail, sendConfirmation, sendBulkEmail }

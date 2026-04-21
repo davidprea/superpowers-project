@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const pool = require('../db/pool')
 const { authenticate, requireRole } = require('../middleware/auth')
+const { sendConfirmation } = require('../services/emailService')
 
 // Public: newsletter signup
 router.post('/', async (req, res, next) => {
@@ -20,6 +21,7 @@ router.post('/', async (req, res, next) => {
        VALUES ($1, $2, $3, $4) RETURNING id, first_name, last_name, organization, email, created_at`,
       [first_name.trim(), last_name.trim(), organization.trim(), email.trim().toLowerCase()]
     )
+    sendConfirmation({ email: rows[0].email, first_name: rows[0].first_name }).catch(console.error)
     res.status(201).json(rows[0])
   } catch (err) {
     next(err)

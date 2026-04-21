@@ -5,43 +5,54 @@ const { sendBulkEmail } = require('../services/emailService')
 
 router.use(authenticate, requireRole('admin'))
 
-// Preview: get recipient count for selected tags
+// Preview: get recipients for selected tags (empty = all subscribers)
 router.post('/preview', async (req, res, next) => {
   try {
     const { tag_ids } = req.body
-    if (!tag_ids?.length) return res.status(400).json({ error: 'Select at least one tag' })
-
-    const { rows } = await pool.query(
-      `SELECT COUNT(DISTINCT ns.id) AS recipient_count
-       FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id
-       WHERE st.tag_id = ANY($1)`,
-      [tag_ids]
-    )
-    res.json({ recipient_count: parseInt(rows[0].recipient_count) })
+    let rows
+    if (tag_ids?.length) {
+      ;({ rows } = await pool.query(
+        `SELECT DISTINCT ns.id, ns.email, ns.first_name, ns.last_name, ns.organization
+         FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id
+         WHERE st.tag_id = ANY($1) ORDER BY ns.last_name, ns.first_name`,
+        [tag_ids]
+      ))
+    } else {
+      ;({ rows } = await pool.query(
+        `SELECT id, email, first_name, last_name, organization
+         FROM newsletter_subscribers ORDER BY last_name, first_name`
+      ))
+    }
+    res.json({ recipients: rows, recipient_count: rows.length })
   } catch (err) {
     next(err)
   }
 })
 
-// Send email to tagged recipients
+// Send email to recipients (empty tags = all subscribers)
 router.post('/send', async (req, res, next) => {
   try {
     const { tag_ids, subject, body } = req.body
-    if (!tag_ids?.length || !subject || !body) {
-      return res.status(400).json({ error: 'Tags, subject, and body are required' })
+    if (!subject || !body) {
+      return res.status(400).json({ error: 'Subject and body are required' })
     }
 
-    const { rows: recipients } = await pool.query(
-      `SELECT DISTINCT ns.email FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id WHERE st.tag_id = ANY($1)`,
-      [tag_ids]
-    )
+    let rows
+    if (tag_ids?.length) {
+      ;({ rows } = await pool.query(
+        `SELECT DISTINCT ns.email FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id WHERE st.tag_id = ANY($1)`,
+        [tag_ids]
+      ))
+    } else {
+      ;({ rows } = await pool.query('SELECT email FROM newsletter_subscribers'))
+    }
 
-    const emails = recipients.map((r) => r.email)
+    const emails = rows.map((r) => r.email)
     await sendBulkEmail({ emails, subject, body })
 
     await pool.query(
       'INSERT INTO email_log (subject, body, tag_ids, recipient_count) VALUES ($1, $2, $3, $4)',
-      [subject, body, JSON.stringify(tag_ids), emails.length]
+      [subject, body, JSON.stringify(tag_ids || []), emails.length]
     )
 
     res.json({ success: true, recipient_count: emails.length })

@@ -21,18 +21,17 @@ export default function AdminEmail() {
     }).catch(() => {})
   }, [])
 
+  // Auto-preview whenever tags change
+  useEffect(() => {
+    api.post('/email/preview', { tag_ids: selectedTags })
+      .then((res) => setPreview(res.data))
+      .catch(() => {})
+  }, [selectedTags])
+
   const toggleTag = (id) => {
     setSelectedTags((prev) =>
       prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
     )
-    setPreview(null)
-  }
-
-  const handlePreview = async () => {
-    try {
-      const res = await api.post('/email/preview', { tag_ids: selectedTags })
-      setPreview(res.data)
-    } catch {}
   }
 
   const handleSend = async () => {
@@ -62,7 +61,7 @@ export default function AdminEmail() {
 
       {daysSinceLastNews !== null && daysSinceLastNews < 7 && (
         <div className="alert alert-warning mb-4">
-          <span>A "News & Announcements" email was sent {daysSinceLastNews} day(s) ago. Consider waiting to maintain a weekly cadence.</span>
+          <span>A newsletter was sent {daysSinceLastNews} day(s) ago. Consider waiting to maintain a weekly cadence.</span>
         </div>
       )}
 
@@ -70,7 +69,7 @@ export default function AdminEmail() {
 
       <div className="flex flex-col gap-4">
         <div>
-          <h3 className="font-semibold mb-2">Select recipient tags:</h3>
+          <h3 className="font-semibold mb-2">Filter by tags (none selected = all subscribers):</h3>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <button
@@ -84,13 +83,38 @@ export default function AdminEmail() {
           </div>
         </div>
 
-        <button className="btn btn-outline btn-sm w-fit" onClick={handlePreview} disabled={selectedTags.length === 0}>
-          Preview Recipients
-        </button>
-
         {preview && (
-          <div className="alert alert-info">
-            <span>This email will be sent to <strong>{preview.recipient_count}</strong> recipient(s).</span>
+          <div className="card bg-base-200">
+            <div className="card-body py-4">
+              <h3 className="font-semibold">
+                Recipients ({preview.recipient_count})
+                {selectedTags.length === 0 && <span className="font-normal text-base-content/60"> — all subscribers</span>}
+              </h3>
+              {preview.recipients.length === 0 ? (
+                <p className="text-sm text-base-content/60">No subscribers match the selected tags.</p>
+              ) : (
+                <div className="overflow-x-auto max-h-64 overflow-y-auto">
+                  <table className="table table-xs">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Organization</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {preview.recipients.map((r) => (
+                        <tr key={r.id}>
+                          <td>{r.first_name} {r.last_name}</td>
+                          <td>{r.email}</td>
+                          <td>{r.organization}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -100,7 +124,7 @@ export default function AdminEmail() {
         <button
           className="btn btn-primary w-fit"
           onClick={handleSend}
-          disabled={!subject || !body || selectedTags.length === 0 || !preview || sending}
+          disabled={!subject || !body || !preview || preview.recipient_count === 0 || sending}
         >
           {sending ? <span className="loading loading-spinner loading-sm"></span> : `Send to ${preview?.recipient_count || 0} Recipients`}
         </button>
