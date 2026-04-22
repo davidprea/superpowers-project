@@ -47,11 +47,11 @@ export default function Members() {
 
   return (
     <div>
-      <HeroSection title="Consortium Members" subtitle="Meet the schools and other organizations in the Superpowers Project" />
+      <HeroSection title="Member Organizations" subtitle="Meet the schools and other organizations in the Superpowers Project" />
       <section className="py-12 px-4 max-w-4xl mx-auto">
         <div className="prose max-w-none mb-10">
           <p>
-            The Superpowers Project brings together a growing consortium of schools and other educational organizations pioneering
+            The Superpowers Project brings together a growing community of schools and other educational organizations pioneering
             AI-based student portfolio assessment. Our members are committed to exploring
             innovative approaches to recognizing and developing student strengths.
           </p>
