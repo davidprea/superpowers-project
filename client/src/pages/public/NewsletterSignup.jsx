@@ -35,8 +35,8 @@ export default function NewsletterSignup() {
     return (
       <div>
         <HeroSection title="You're Subscribed!" subtitle="Thank you for joining the Superpowers Project newsletter" />
-        <section className="py-12 px-4 max-w-md mx-auto text-center">
-          <p className="text-lg">You'll receive news, updates, and announcements from the consortium directly to your inbox.</p>
+        <section className="py-20 px-6 max-w-md mx-auto text-center">
+          <p style={{ color: 'var(--color-ink-soft)' }}>You'll receive news, updates, and announcements from the consortium directly to your inbox.</p>
         </section>
       </div>
     )
@@ -45,32 +45,31 @@ export default function NewsletterSignup() {
   return (
     <div>
       <HeroSection title="Stay Connected" subtitle="Subscribe to the Superpowers Project newsletter" />
-      <section className="py-12 px-4 max-w-md mx-auto">
-        <div className="card bg-base-200">
-          <div className="card-body">
-            {error && <div className="alert alert-error"><span>{error}</span></div>}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="form-control w-full">
-                <label className="label"><span className="label-text">First Name</span></label>
-                <input type="text" name="first_name" className="input input-bordered w-full" value={form.first_name} onChange={handleChange} required />
-              </div>
-              <div className="form-control w-full">
-                <label className="label"><span className="label-text">Last Name</span></label>
-                <input type="text" name="last_name" className="input input-bordered w-full" value={form.last_name} onChange={handleChange} required />
-              </div>
-              <div className="form-control w-full">
-                <label className="label"><span className="label-text">Organization</span></label>
-                <input type="text" name="organization" className="input input-bordered w-full" value={form.organization} onChange={handleChange} required />
-              </div>
-              <div className="form-control w-full">
-                <label className="label"><span className="label-text">Email</span></label>
-                <input type="email" name="email" className="input input-bordered w-full" value={form.email} onChange={handleChange} required />
-              </div>
-              <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-                {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Subscribe'}
-              </button>
-            </form>
-          </div>
+      <section className="py-20 px-6 max-w-md mx-auto">
+        <div className="lab-card">
+          <p className="meta-label-copper mb-6">&sect; Subscribe</p>
+          {error && <div className="alert-error p-3 mb-4"><span>{error}</span></div>}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div>
+              <label className="meta-label block mb-2">First Name</label>
+              <input type="text" name="first_name" className="w-full px-4 py-2" value={form.first_name} onChange={handleChange} required />
+            </div>
+            <div>
+              <label className="meta-label block mb-2">Last Name</label>
+              <input type="text" name="last_name" className="w-full px-4 py-2" value={form.last_name} onChange={handleChange} required />
+            </div>
+            <div>
+              <label className="meta-label block mb-2">Organization</label>
+              <input type="text" name="organization" className="w-full px-4 py-2" value={form.organization} onChange={handleChange} required />
+            </div>
+            <div>
+              <label className="meta-label block mb-2">Email</label>
+              <input type="email" name="email" className="w-full px-4 py-2" value={form.email} onChange={handleChange} required />
+            </div>
+            <button type="submit" className="btn-copper w-full" disabled={loading}>
+              {loading ? 'Subscribing...' : 'Subscribe'}
+            </button>
+          </form>
         </div>
       </section>
     </div>

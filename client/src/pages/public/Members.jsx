@@ -4,22 +4,20 @@ import HeroSection from '../../layouts/HeroSection'
 
 function MemberCard({ school_name, location, logo_url, link, description }) {
   const content = (
-    <div className="card bg-base-200 hover:shadow-lg transition-shadow h-full">
-      <figure className="px-8 pt-8">
+    <div className="lab-card-light h-full flex flex-col items-center text-center hover:border-[var(--color-ink)] transition-colors">
+      <div className="px-4 pt-2 pb-4">
         <img
           src={logo_url}
           alt={`${school_name} logo`}
           className="h-24 w-auto object-contain"
         />
-      </figure>
-      <div className="card-body items-center text-center">
-        <h3 className="card-title text-lg">{school_name}</h3>
-        <p className="text-sm text-base-content/60">{location}</p>
-        {description && <p className="text-sm mt-1">{description}</p>}
-        {link && (
-          <p className="text-xs text-primary mt-1">Visit project page &rarr;</p>
-        )}
       </div>
+      <h3 className="font-serif text-xl mb-1" style={{ color: 'var(--color-ink)' }}>{school_name}</h3>
+      <p className="meta-label mb-2">{location}</p>
+      {description && <p className="text-sm mt-1" style={{ color: 'var(--color-ink-soft)' }}>{description}</p>}
+      {link && (
+        <p className="meta-label-copper mt-3">Visit project page &rarr;</p>
+      )}
     </div>
   )
 
@@ -48,9 +46,10 @@ export default function Members() {
   return (
     <div>
       <HeroSection title="Member Organizations" subtitle="Meet the schools and other organizations in the Superpowers Project" />
-      <section className="py-12 px-4 max-w-4xl mx-auto">
-        <div className="prose max-w-none mb-10">
-          <p>
+      <section className="py-20 px-6 max-w-[1400px] mx-auto">
+        <p className="meta-label-copper mb-10">&sect; 01 &mdash; Consortium</p>
+        <div className="max-w-[68ch] mb-12">
+          <p style={{ color: 'var(--color-ink-soft)' }}>
             The Superpowers Project brings together a growing community of schools and other educational organizations pioneering
             AI-based student portfolio assessment. Our members are committed to exploring
             innovative approaches to recognizing and developing student strengths.
@@ -59,7 +58,7 @@ export default function Members() {
         {loading ? (
           <div className="flex justify-center"><span className="loading loading-spinner loading-lg"></span></div>
         ) : schools.length === 0 ? (
-          <p className="text-center text-base-content/60">Member schools coming soon.</p>
+          <p style={{ color: 'var(--color-mute)' }}>Member schools coming soon.</p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {schools.map((school) => (

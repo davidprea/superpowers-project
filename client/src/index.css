@@ -1,20 +1,95 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-@plugin "daisyui" {
-  themes: nord --default;
-}
 
 @theme {
-  --font-sans: "Hanken Grotesk", sans-serif;
+  --font-sans: 'Inter Tight', system-ui, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-paper: #F5EFE6;
+  --color-paper-deep: #EDE4D3;
+  --color-ink: #1B1A17;
+  --color-ink-soft: #3A362F;
+  --color-mute: #7A746A;
+  --color-rule: #C8BEA9;
+  --color-copper: #B5532A;
+  --color-copper-soft: rgba(181, 83, 42, 0.08);
+  --color-sage: #5E7A4F;
+  --color-sage-soft: rgba(94, 122, 79, 0.10);
+  --color-gold: #B1863C;
+}
+
+/* Base */
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* Headings — editorial serif */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-ink);
+}
+
+/* Meta label utility */
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.meta-label-copper {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-copper);
+}
+
+/* Hairline rule */
+.hairline {
+  border-top: 1px solid var(--color-rule);
+}
+
+/* Prose overrides for typography plugin */
+.prose {
+  --tw-prose-body: var(--color-ink-soft);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-links: var(--color-copper);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-bullets: var(--color-mute);
+  --tw-prose-counters: var(--color-mute);
+  --tw-prose-hr: var(--color-rule);
+  font-family: var(--font-sans);
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
 .prose a {
-  color: #2563eb;
+  color: var(--color-copper);
   text-decoration: underline;
+  text-decoration-color: var(--color-rule);
+  text-underline-offset: 3px;
 }
 
 .prose a:hover {
-  color: #1d4ed8;
+  color: var(--color-ink);
+  text-decoration-color: var(--color-copper);
 }
 
 .prose li {
@@ -25,4 +100,125 @@
 .prose li p {
   margin-top: 0;
   margin-bottom: 0;
+}
+
+/* Card style — laboratory */
+.lab-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  padding: 36px;
+}
+
+.lab-card-light {
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-radius: 2px;
+  padding: 36px;
+}
+
+/* Buttons */
+.btn-copper {
+  background-color: var(--color-copper);
+  color: var(--color-paper);
+  border: none;
+  border-radius: 2px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-copper:hover {
+  background-color: #9A4622;
+}
+
+.btn-outline-ink {
+  background-color: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-outline-ink:hover {
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="number"],
+textarea,
+select {
+  background: var(--color-paper) !important;
+  border: 1px solid var(--color-rule) !important;
+  border-radius: 2px !important;
+  color: var(--color-ink) !important;
+  font-family: var(--font-sans) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-copper) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px var(--color-copper) !important;
+}
+
+/* Badge overrides */
+.lab-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border: 1px solid var(--color-rule);
+  border-radius: 2px;
+  color: var(--color-mute);
+  background: transparent;
+}
+
+/* Loading spinner color */
+.loading {
+  color: var(--color-copper);
+}
+
+/* Alert overrides */
+.alert-error {
+  background-color: rgba(181, 83, 42, 0.1) !important;
+  color: var(--color-copper) !important;
+  border: 1px solid var(--color-copper) !important;
+  border-radius: 2px !important;
+}
+
+.alert-info {
+  background-color: var(--color-copper-soft) !important;
+  color: var(--color-ink-soft) !important;
+  border: 1px solid var(--color-rule) !important;
+  border-radius: 2px !important;
+}
+
+/* DaisyUI theme overrides to harmonize */
+[data-theme="nord"] {
+  --b1: 245 239 230;
+  --b2: 237 228 211;
+  --b3: 200 190 169;
+  --bc: 27 26 23;
+  --p: 181 83 42;
+  --pc: 245 239 230;
+  --s: 94 122 79;
+  --sc: 245 239 230;
+  --a: 177 134 60;
+  --ac: 245 239 230;
+  --n: 27 26 23;
+  --nc: 245 239 230;
 }

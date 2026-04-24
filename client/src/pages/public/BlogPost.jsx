@@ -15,16 +15,16 @@ export default function BlogPost() {
   }, [slug])
 
   if (loading) return <div className="flex justify-center p-12"><span className="loading loading-spinner loading-lg"></span></div>
-  if (!post) return <div className="text-center p-12"><h2 className="text-2xl font-bold">Post not found</h2><Link to="/blog" className="btn btn-primary mt-4">Back to Blog</Link></div>
+  if (!post) return <div className="text-center p-12"><h2 className="font-serif text-2xl">Post not found</h2><Link to="/blog" className="btn-copper mt-4 inline-block">Back to Blog</Link></div>
 
   return (
-    <article className="py-12 px-4 max-w-3xl mx-auto">
-      <Link to="/blog" className="btn btn-ghost btn-sm mb-4">&larr; Back to News</Link>
-      <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
-      <p className="text-sm text-base-content/60 mb-8">
-        By {post.author_name} &middot; {new Date(post.published_at).toLocaleDateString()}
+    <article className="py-20 px-6 max-w-[68ch] mx-auto">
+      <Link to="/blog" className="meta-label hover:text-[var(--color-copper)] transition-colors">&larr; Back to News</Link>
+      <h1 className="font-serif text-4xl sm:text-5xl mt-8 mb-4" style={{ color: 'var(--color-ink)', letterSpacing: '-0.02em', lineHeight: 1.05 }}>{post.title}</h1>
+      <p className="meta-label mb-12">
+        {post.author_name} &middot; {new Date(post.published_at).toLocaleDateString()}
       </p>
-      <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+      <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
     </article>
   )
 }

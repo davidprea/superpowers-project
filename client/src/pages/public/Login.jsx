@@ -25,25 +25,24 @@ export default function Login() {
   }
 
   return (
-    <div className="flex justify-center py-16 px-4">
-      <div className="card w-full max-w-md bg-base-200">
-        <div className="card-body">
-          <h2 className="card-title text-2xl justify-center">Admin Login</h2>
-          {error && <div className="alert alert-error"><span>{error}</span></div>}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="form-control w-full">
-              <label className="label"><span className="label-text">Email</span></label>
-              <input type="email" className="input input-bordered w-full" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            </div>
-            <div className="form-control w-full">
-              <label className="label"><span className="label-text">Password</span></label>
-              <input type="password" className="input input-bordered w-full" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
-            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-              {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Login'}
-            </button>
-          </form>
-        </div>
+    <div className="flex justify-center py-24 px-6">
+      <div className="lab-card w-full max-w-md">
+        <p className="meta-label-copper mb-6">&sect; Admin</p>
+        <h2 className="font-serif text-3xl mb-8" style={{ color: 'var(--color-ink)' }}>Login</h2>
+        {error && <div className="alert-error p-3 mb-4"><span>{error}</span></div>}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div>
+            <label className="meta-label block mb-2">Email</label>
+            <input type="email" className="w-full px-4 py-2" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div>
+            <label className="meta-label block mb-2">Password</label>
+            <input type="password" className="w-full px-4 py-2" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <button type="submit" className="btn-copper w-full" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
       </div>
     </div>
   )
