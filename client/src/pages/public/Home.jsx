@@ -37,7 +37,7 @@ export default function Home() {
     <div>
       <HeroSection
         title="The Superpowers Project"
-        subtitle="A coalition of schools pioneering AI-based student portfolio assessment"
+        subtitle="A coalition of educators pioneering AI-based student portfolio assessment"
         backgroundImage={meshBg}
       >
         <div className="flex gap-4 justify-center mt-8">
