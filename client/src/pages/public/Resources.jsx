@@ -32,7 +32,6 @@ export default function Resources() {
     <div>
       <HeroSection title="Resource Library" subtitle="Curated resources for AI-based student portfolio assessment" />
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <p className="meta-label-copper mb-10">&sect; 01 &mdash; Browse</p>
         <div className="flex flex-wrap gap-4 mb-8 items-center">
           <input
             type="text"

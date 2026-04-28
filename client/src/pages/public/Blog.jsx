@@ -24,7 +24,6 @@ export default function Blog() {
     <div>
       <HeroSection title="News & Announcements" subtitle="Updates from the Superpowers Project consortium" />
       <section className="py-20 px-6 max-w-3xl mx-auto">
-        <p className="meta-label-copper mb-10">&sect; 01 &mdash; Latest</p>
         {loading ? (
           <div className="flex justify-center"><span className="loading loading-spinner loading-lg"></span></div>
         ) : posts.length === 0 ? (

@@ -8,7 +8,6 @@ export default function About() {
         subtitle="Our mission is to explore and advance AI-based student portfolio assessment across a diverse consortium of schools."
       />
       <section className="py-20 px-6 max-w-[68ch] mx-auto">
-        <p className="meta-label-copper mb-10">&sect; 01 &mdash; Our Mission</p>
         <div className="prose prose-lg max-w-none">
           <h2>Our Mission</h2>
           <p>

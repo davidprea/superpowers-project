@@ -47,7 +47,6 @@ export default function Members() {
     <div>
       <HeroSection title="Member Organizations" subtitle="Meet the schools and other organizations in the Superpowers Project" />
       <section className="py-20 px-6 max-w-[1400px] mx-auto">
-        <p className="meta-label-copper mb-10">&sect; 01 &mdash; Consortium</p>
         <div className="max-w-[68ch] mb-12">
           <p style={{ color: 'var(--color-ink-soft)' }}>
             The Superpowers Project brings together a growing community of schools and other educational organizations pioneering

@@ -28,6 +28,23 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+// Public: unsubscribe by email
+router.post('/unsubscribe', async (req, res, next) => {
+  try {
+    const { email } = req.body
+    if (!email) return res.status(400).json({ error: 'Email is required' })
+
+    const { rowCount } = await pool.query(
+      'DELETE FROM newsletter_subscribers WHERE email = $1',
+      [email.trim().toLowerCase()]
+    )
+    if (rowCount === 0) return res.status(404).json({ error: 'Email not found' })
+    res.json({ success: true })
+  } catch (err) {
+    next(err)
+  }
+})
+
 // Admin: list all subscribers
 router.get('/', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
