@@ -27,13 +27,13 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[var(--color-rule)]" style={{ backgroundColor: 'var(--color-paper)' }}>
-      <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between relative">
         <Link to="/" className="font-serif text-2xl tracking-tight" style={{ color: 'var(--color-ink)', letterSpacing: '-0.02em' }}>
           Superpowers Project
         </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden lg:flex items-center gap-8">
+        {/* Desktop nav — centered on the full bar */}
+        <ul className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {[
             ['/', 'Home'],
             ['/about', 'About'],
