@@ -8,7 +8,11 @@
       "Bash(node:*)",
       "Bash(git checkout:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git merge:*)",
+      "Bash(git stash:*)",
+      "Bash(ls /Users/davidrea/Programming/superpowers-project/client/public/*portrait*)",
+      "Bash(ls /Users/davidrea/Programming/superpowers-project/client/public/*.png)"
     ]
   }
 }
