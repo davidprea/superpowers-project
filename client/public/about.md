@@ -4,7 +4,7 @@ The Superpowers Project is a coalition of educators, schools, and organizations 
 
 ## Who We Are
 
-More than any individual, the Superpowers Project consists of its [member organizations](/members) and the individuals who contribute their time and enthusiasm.  The founders of this project, David Rea and Scott Looney, are merely the connectors and collaters of the combined wisdom and experience of this extraordinary group. 
+More than any individual, the Superpowers Project consists of its [member organizations](/members) and the individuals who contribute their time and enthusiasm.  The founders of the project, David Rea and Scott Looney, are merely the connectors and collaters of the combined wisdom and experience of this extraordinary group. 
 
 ### David Rea
 

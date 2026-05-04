@@ -22,16 +22,17 @@ function MenuBar({ editor }) {
   }
 
   const prevent = (e) => e.preventDefault()
+  const cls = (active) => `tool-btn${active ? ' is-active' : ''}`
 
   return (
-    <div className="flex flex-wrap gap-1 p-2 border-b border-base-300 bg-base-200 rounded-t-lg">
-      <button type="button" className={`btn btn-xs ${editor.isActive('heading', { level: 2 }) ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('heading', { level: 3 }) ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('bold') ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('italic') ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleItalic().run()}>I</button>
-      <button type="button" className={`btn btn-xs ${editor.isActive('bulletList') ? 'btn-primary' : 'btn-ghost'}`} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBulletList().run()}>List</button>
-      <button type="button" className="btn btn-xs btn-ghost" onClick={addLink}>Link</button>
-      <button type="button" className="btn btn-xs btn-ghost" onClick={addImage}>Image</button>
+    <div className="flex flex-wrap gap-1 p-2" style={{ background: 'var(--color-paper-deep)', borderBottom: '1px solid var(--color-rule)' }}>
+      <button type="button" className={cls(editor.isActive('heading', { level: 2 }))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
+      <button type="button" className={cls(editor.isActive('heading', { level: 3 }))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
+      <button type="button" className={cls(editor.isActive('bold'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBold().run()}><strong>B</strong></button>
+      <button type="button" className={cls(editor.isActive('italic'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleItalic().run()}><em>I</em></button>
+      <button type="button" className={cls(editor.isActive('bulletList'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBulletList().run()}>List</button>
+      <button type="button" className={cls(editor.isActive('link'))} onMouseDown={prevent} onClick={addLink}>Link</button>
+      <button type="button" className={cls(false)} onMouseDown={prevent} onClick={addImage}>Image</button>
     </div>
   )
 }
@@ -96,10 +97,30 @@ export default function BlogEdit() {
           <MenuBar editor={editor} />
           <EditorContent editor={editor} />
         </div>
-        <div className="flex gap-2">
-          <button className="btn btn-ghost" onClick={() => handleSave('draft')} disabled={saving}>Save Draft</button>
-          <button className="btn btn-primary" onClick={() => handleSave('approved')} disabled={saving}>
+        <div className="flex gap-3 mt-2">
+          <button
+            type="button"
+            className="btn-outline-ink"
+            onClick={() => handleSave('draft')}
+            disabled={saving}
+          >
+            Save Draft
+          </button>
+          <button
+            type="button"
+            className="btn-copper"
+            onClick={() => handleSave('approved')}
+            disabled={saving}
+          >
             {saving ? <span className="loading loading-spinner loading-sm"></span> : 'Publish'}
+          </button>
+          <button
+            type="button"
+            className="btn-outline-ink"
+            onClick={() => navigate('/admin/blog')}
+            disabled={saving}
+          >
+            Cancel
           </button>
         </div>
       </div>

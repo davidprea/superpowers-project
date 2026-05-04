@@ -52,7 +52,14 @@ export default function BlogManager() {
         <div className="flex justify-center p-8"><span className="loading loading-spinner loading-lg"></span></div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="table">
+          <table className="table w-full" style={{ tableLayout: 'fixed' }}>
+            <colgroup>
+              <col style={{ width: '40%' }} />
+              <col style={{ width: '18%' }} />
+              <col style={{ width: '12%' }} />
+              <col style={{ width: '12%' }} />
+              <col style={{ width: '18%' }} />
+            </colgroup>
             <thead>
               <tr>
                 <th>Title</th>
@@ -65,8 +72,8 @@ export default function BlogManager() {
             <tbody>
               {posts.map((post) => (
                 <tr key={post.id}>
-                  <td>{post.title}</td>
-                  <td>{post.author_name}</td>
+                  <td className="truncate" title={post.title}>{post.title}</td>
+                  <td className="truncate" title={post.author_name}>{post.author_name}</td>
                   <td>
                     <span className={`badge ${post.approval_status === 'approved' ? 'badge-success' : post.approval_status === 'pending' ? 'badge-warning' : post.approval_status === 'rejected' ? 'badge-error' : 'badge-ghost'}`}>
                       {post.approval_status}
@@ -74,7 +81,7 @@ export default function BlogManager() {
                   </td>
                   <td>{new Date(post.created_at).toLocaleDateString()}</td>
                   <td>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <Link to={`/admin/blog/${post.id}/edit`} className="btn btn-ghost btn-xs">Edit</Link>
                       {post.approval_status === 'pending' && (
                         <>
