@@ -31,6 +31,7 @@ function MenuBar({ editor }) {
       <button type="button" className={cls(editor.isActive('bold'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBold().run()}><strong>B</strong></button>
       <button type="button" className={cls(editor.isActive('italic'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleItalic().run()}><em>I</em></button>
       <button type="button" className={cls(editor.isActive('bulletList'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBulletList().run()}>List</button>
+      <button type="button" className={cls(editor.isActive('blockquote'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBlockquote().run()}>Quote</button>
       <button type="button" className={cls(editor.isActive('link'))} onMouseDown={prevent} onClick={addLink}>Link</button>
       <button type="button" className={cls(false)} onMouseDown={prevent} onClick={addImage}>Image</button>
     </div>

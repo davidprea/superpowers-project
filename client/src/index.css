@@ -102,6 +102,33 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0;
 }
 
+.prose blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+  background: var(--color-copper-soft);
+  border-left: 3px solid var(--color-copper);
+  margin: 1.5em 0;
+  padding: 0.9em 1.4em;
+  quotes: none;
+}
+
+.prose blockquote p {
+  margin: 0;
+}
+
+.prose blockquote p::before,
+.prose blockquote p::after {
+  content: none;
+}
+
+.prose blockquote p + p {
+  margin-top: 0.6em;
+}
+
 /* Card style — laboratory */
 .lab-card {
   background: var(--color-paper);
