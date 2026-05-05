@@ -36,7 +36,7 @@ export default function Blog() {
 
   return (
     <div>
-      <HeroSection title="News & Announcements" subtitle="Updates from the Superpowers Project consortium" />
+      <HeroSection title="The Superpowers Blog" subtitle="News and Announcements (...and other things we find interesting)" />
       <section className="py-20 px-6 max-w-3xl mx-auto">
         {loading ? (
           <div className="flex justify-center"><span className="loading loading-spinner loading-lg"></span></div>

@@ -10,6 +10,7 @@ const resourceRoutes = require('./routes/resources')
 const subscriberRoutes = require('./routes/subscribers')
 const emailRoutes = require('./routes/email')
 const memberRoutes = require('./routes/members')
+const uploadRoutes = require('./routes/uploads')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -24,6 +25,7 @@ app.use('/api/resources', resourceRoutes)
 app.use('/api/subscribers', subscriberRoutes)
 app.use('/api/email', emailRoutes)
 app.use('/api/members', memberRoutes)
+app.use('/api/uploads', uploadRoutes)
 
 app.use(errorHandler)
 

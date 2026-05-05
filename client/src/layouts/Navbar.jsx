@@ -37,7 +37,7 @@ export default function Navbar() {
           {[
             ['/', 'Home'],
             ['/about', 'About'],
-            ['/blog', 'News'],
+            ['/blog', 'Blog'],
             ['/members', 'Members'],
             ['/resources', 'Resources'],
           ].map(([to, label]) => (
@@ -82,7 +82,7 @@ export default function Navbar() {
             </button>
             {mobileOpen && (
               <ul className="absolute right-0 mt-3 z-10 p-3 w-52 flex flex-col gap-1" style={{ backgroundColor: 'var(--color-paper)', border: '1px solid var(--color-rule)', borderRadius: '2px' }}>
-                {[['/', 'Home'], ['/about', 'About'], ['/blog', 'News'], ['/members', 'Members'], ['/resources', 'Resources']].map(([to, label]) => (
+                {[['/', 'Home'], ['/about', 'About'], ['/blog', 'Blog'], ['/members', 'Members'], ['/resources', 'Resources']].map(([to, label]) => (
                   <li key={to}><Link to={to} onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm hover:text-[var(--color-copper)] transition-colors" style={{ color: isActive(to) ? 'var(--color-copper)' : 'var(--color-ink-soft)' }}>{label}</Link></li>
                 ))}
               </ul>

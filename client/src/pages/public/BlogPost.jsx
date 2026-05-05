@@ -19,7 +19,7 @@ export default function BlogPost() {
 
   return (
     <article className="py-20 px-6 max-w-[68ch] mx-auto">
-      <Link to="/blog" className="meta-label hover:text-[var(--color-copper)] transition-colors">&larr; Back to News</Link>
+      <Link to="/blog" className="meta-label hover:text-[var(--color-copper)] transition-colors">&larr; Back to Blog</Link>
       <h1 className="font-serif text-4xl sm:text-5xl mt-8 mb-4" style={{ color: 'var(--color-ink)', letterSpacing: '-0.02em', lineHeight: 1.05 }}>{post.title}</h1>
       <p className="meta-label mb-12">
         {post.author_name} &middot; {new Date(post.published_at).toLocaleDateString()}
