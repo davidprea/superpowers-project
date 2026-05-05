@@ -1,12 +1,54 @@
 const router = require('express').Router()
+const rateLimit = require('express-rate-limit')
 const pool = require('../db/pool')
 const { authenticate, requireRole } = require('../middleware/auth')
 const { sendConfirmation } = require('../services/emailService')
+const { verify: verifyUnsubscribe } = require('../services/unsubscribeToken')
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const subscribeLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many signups from this address. Try again later.' },
+})
 
 // Public: newsletter signup
-router.post('/', async (req, res, next) => {
+router.post('/', subscribeLimiter, async (req, res, next) => {
   try {
     const { first_name, last_name, organization, email } = req.body
+    if (!first_name || !last_name || !organization || !email) {
+      return res.status(400).json({ error: 'First name, last name, organization, and email are required' })
+    }
+    if (!EMAIL_RE.test(email.trim())) {
+      return res.status(400).json({ error: 'Please enter a valid email address.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+    const existing = await pool.query('SELECT id FROM newsletter_subscribers WHERE email = $1', [normalizedEmail])
+    if (existing.rows.length > 0) {
+      // Don't leak whether the email is already subscribed.
+      return res.status(201).json({ ok: true })
+    }
+
+    const { rows } = await pool.query(
+      `INSERT INTO newsletter_subscribers (first_name, last_name, organization, email)
+       VALUES ($1, $2, $3, $4) RETURNING id, first_name, last_name, organization, email, created_at`,
+      [first_name.trim(), last_name.trim(), organization.trim(), normalizedEmail]
+    )
+    sendConfirmation({ email: rows[0].email, first_name: rows[0].first_name }).catch(console.error)
+    res.status(201).json({ ok: true })
+  } catch (err) {
+    next(err)
+  }
+})
+
+// Admin: add subscriber, optionally sending the welcome email
+router.post('/admin', authenticate, requireRole('admin'), async (req, res, next) => {
+  try {
+    const { first_name, last_name, organization, email, send_confirmation } = req.body
     if (!first_name || !last_name || !organization || !email) {
       return res.status(400).json({ error: 'First name, last name, organization, and email are required' })
     }
@@ -22,37 +64,50 @@ router.post('/', async (req, res, next) => {
        VALUES ($1, $2, $3, $4) RETURNING id, first_name, last_name, organization, email, created_at`,
       [first_name.trim(), last_name.trim(), organization.trim(), normalizedEmail]
     )
-    sendConfirmation({ email: rows[0].email, first_name: rows[0].first_name }).catch(console.error)
+
+    if (send_confirmation) {
+      sendConfirmation({ email: rows[0].email, first_name: rows[0].first_name }).catch(console.error)
+    }
     res.status(201).json(rows[0])
   } catch (err) {
     next(err)
   }
 })
 
-// Public: unsubscribe by email
+// Public: unsubscribe by signed link
 router.post('/unsubscribe', async (req, res, next) => {
   try {
-    const { email } = req.body
-    if (!email) return res.status(400).json({ error: 'Email is required' })
+    const { email, token } = req.body
+    if (!email || !token) return res.status(400).json({ error: 'Invalid unsubscribe link' })
+    const normalizedEmail = email.trim().toLowerCase()
+    if (!verifyUnsubscribe(normalizedEmail, token)) {
+      return res.status(400).json({ error: 'Invalid unsubscribe link' })
+    }
 
-    const { rowCount } = await pool.query(
+    await pool.query(
       'DELETE FROM newsletter_subscribers WHERE email = $1',
-      [email.trim().toLowerCase()]
+      [normalizedEmail]
     )
-    if (rowCount === 0) return res.status(404).json({ error: 'Email not found' })
+    // Don't reveal whether the email was on the list — same response either way.
     res.json({ success: true })
   } catch (err) {
     next(err)
   }
 })
 
-// Admin: list all subscribers
+// Admin: list subscribers with pagination
 router.get('/', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 200)
+    const offset = Math.max(parseInt(req.query.offset, 10) || 0, 0)
+
+    const { rows: countRows } = await pool.query('SELECT COUNT(*)::int AS total FROM newsletter_subscribers')
     const { rows } = await pool.query(
-      'SELECT id, first_name, last_name, organization, email, created_at FROM newsletter_subscribers ORDER BY created_at DESC'
+      `SELECT id, first_name, last_name, organization, email, created_at
+       FROM newsletter_subscribers ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+      [limit, offset]
     )
-    res.json(rows)
+    res.json({ rows, total: countRows[0].total, limit, offset })
   } catch (err) {
     next(err)
   }

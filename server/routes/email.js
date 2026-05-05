@@ -5,25 +5,31 @@ const { sendBulkEmail } = require('../services/emailService')
 
 router.use(authenticate, requireRole('admin'))
 
-// Preview: get recipients for selected tags (empty = all subscribers)
+const PREVIEW_SAMPLE = 100
+
+// Preview: total recipient count + sample of up to 100 names for selected tags (empty = all subscribers)
 router.post('/preview', async (req, res, next) => {
   try {
     const { tag_ids } = req.body
-    let rows
+    let countQuery, sampleQuery, params
     if (tag_ids?.length) {
-      ;({ rows } = await pool.query(
-        `SELECT DISTINCT ns.id, ns.email, ns.first_name, ns.last_name, ns.organization
-         FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id
-         WHERE st.tag_id = ANY($1) ORDER BY ns.last_name, ns.first_name`,
-        [tag_ids]
-      ))
+      countQuery = `SELECT COUNT(DISTINCT ns.id)::int AS total
+                    FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id
+                    WHERE st.tag_id = ANY($1)`
+      sampleQuery = `SELECT DISTINCT ns.id, ns.email, ns.first_name, ns.last_name, ns.organization
+                     FROM newsletter_subscribers ns JOIN subscriber_tags st ON ns.id = st.subscriber_id
+                     WHERE st.tag_id = ANY($1) ORDER BY ns.last_name, ns.first_name LIMIT $2`
+      params = [tag_ids]
     } else {
-      ;({ rows } = await pool.query(
-        `SELECT id, email, first_name, last_name, organization
-         FROM newsletter_subscribers ORDER BY last_name, first_name`
-      ))
+      countQuery = 'SELECT COUNT(*)::int AS total FROM newsletter_subscribers'
+      sampleQuery = `SELECT id, email, first_name, last_name, organization
+                     FROM newsletter_subscribers ORDER BY last_name, first_name LIMIT $1`
+      params = []
     }
-    res.json({ recipients: rows, recipient_count: rows.length })
+
+    const { rows: countRows } = await pool.query(countQuery, params)
+    const { rows } = await pool.query(sampleQuery, [...params, PREVIEW_SAMPLE])
+    res.json({ recipients: rows, recipient_count: countRows[0].total })
   } catch (err) {
     next(err)
   }
