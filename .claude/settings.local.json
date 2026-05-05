@@ -16,7 +16,13 @@
       "Bash(grep -r \"password\\\\|secret\\\\|key\\\\|token\" /Users/davidrea/Programming/superpowers-project --include=\"*.js\" --include=\"*.jsx\" ! -path \"*/node_modules/*\" ! -path \"*/dist/*\")",
       "Bash(grep -i \"hardcoded\\\\|=.*[a-z0-9]{20,}\\\\|password.*=\")",
       "Bash(npx eslint *)",
-      "Bash(npm audit *)"
+      "Bash(npm audit *)",
+      "Bash(JWT_SECRET=your-secret-key-change-this CORS_ORIGIN=http://localhost:5173 timeout 3 node index.js)",
+      "Bash(JWT_SECRET=your-secret-key-change-this CORS_ORIGIN=http://localhost:5173 node index.js)",
+      "Bash(jobs -p)",
+      "Bash(xargs -r kill)",
+      "Bash(wait)",
+      "Bash(grep -q \"^JWT_SECRET=your-secret-key-change-this$\" .env)"
     ]
   }
 }

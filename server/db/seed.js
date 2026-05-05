@@ -4,8 +4,11 @@ const pool = require('./pool')
 const bcrypt = require('bcryptjs')
 
 async function seed() {
-  const email = process.env.ADMIN_EMAIL || 'admin@superpowersproject.org'
-  const password = process.env.ADMIN_PASSWORD || 'changeme123'
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be set to seed the admin account.')
+  }
+  const email = process.env.ADMIN_EMAIL.trim().toLowerCase()
+  const password = process.env.ADMIN_PASSWORD
   const name = process.env.ADMIN_NAME || 'Admin'
 
   const { rows } = await pool.query('SELECT id FROM users WHERE email = $1', [email])

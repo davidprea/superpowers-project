@@ -11,7 +11,8 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'First name, last name, organization, and email are required' })
     }
 
-    const existing = await pool.query('SELECT id FROM newsletter_subscribers WHERE email = $1', [email])
+    const normalizedEmail = email.trim().toLowerCase()
+    const existing = await pool.query('SELECT id FROM newsletter_subscribers WHERE email = $1', [normalizedEmail])
     if (existing.rows.length > 0) {
       return res.status(409).json({ error: 'This email is already subscribed' })
     }
@@ -19,7 +20,7 @@ router.post('/', async (req, res, next) => {
     const { rows } = await pool.query(
       `INSERT INTO newsletter_subscribers (first_name, last_name, organization, email)
        VALUES ($1, $2, $3, $4) RETURNING id, first_name, last_name, organization, email, created_at`,
-      [first_name.trim(), last_name.trim(), organization.trim(), email.trim().toLowerCase()]
+      [first_name.trim(), last_name.trim(), organization.trim(), normalizedEmail]
     )
     sendConfirmation({ email: rows[0].email, first_name: rows[0].first_name }).catch(console.error)
     res.status(201).json(rows[0])
@@ -81,10 +82,11 @@ router.get('/:id', authenticate, requireRole('admin'), async (req, res, next) =>
 router.patch('/:id', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
     const { first_name, last_name, organization, email } = req.body
+    const normalizedEmail = email ? email.trim().toLowerCase() : null
     await pool.query(
       `UPDATE newsletter_subscribers SET first_name = COALESCE($1, first_name), last_name = COALESCE($2, last_name),
        organization = COALESCE($3, organization), email = COALESCE($4, email) WHERE id = $5`,
-      [first_name, last_name, organization, email, req.params.id]
+      [first_name, last_name, organization, normalizedEmail, req.params.id]
     )
     res.json({ success: true })
   } catch (err) {

@@ -15,7 +15,26 @@ const uploadRoutes = require('./routes/uploads')
 const app = express()
 const PORT = process.env.PORT || 3001
 
-app.use(cors())
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-secret-key-change-this') {
+  console.error('FATAL: JWT_SECRET is not set (or still the placeholder). Refusing to start.')
+  process.exit(1)
+}
+
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Allow same-origin / curl / server-to-server (no Origin header).
+      if (!origin) return cb(null, true)
+      if (allowedOrigins.includes(origin)) return cb(null, true)
+      cb(new Error(`CORS: origin ${origin} not allowed`))
+    },
+  })
+)
 app.use(express.json())
 
 app.use('/api/auth', authRoutes)

@@ -11,9 +11,10 @@ router.post('/login', async (req, res, next) => {
       return res.status(400).json({ error: 'Email and password are required' })
     }
 
+    const normalizedEmail = email.trim().toLowerCase()
     const { rows } = await pool.query(
       'SELECT id, email, password_hash, name, role FROM users WHERE email = $1',
-      [email]
+      [normalizedEmail]
     )
     if (rows.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' })

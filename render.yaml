@@ -11,7 +11,7 @@ services:
     plan: free
     rootDir: server
     buildCommand: npm install
-    startCommand: node db/migrate.js && node index.js
+    startCommand: node db/migrate.js && node db/seed.js && node index.js
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -25,6 +25,8 @@ services:
         value: noreply@superpowersproject.org
       - key: NODE_ENV
         value: production
+      - key: CORS_ORIGIN
+        sync: false
       - key: ADMIN_EMAIL
         sync: false
       - key: ADMIN_PASSWORD
