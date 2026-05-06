@@ -5,6 +5,7 @@ import api from '../../services/api'
 export default function Unsubscribe() {
   const [searchParams] = useSearchParams()
   const [email] = useState(searchParams.get('email') || '')
+  const [token] = useState(searchParams.get('token') || '')
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -13,7 +14,7 @@ export default function Unsubscribe() {
     setError('')
     setLoading(true)
     try {
-      await api.post('/subscribers/unsubscribe', { email })
+      await api.post('/subscribers/unsubscribe', { email, token })
       setDone(true)
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong. Please try again.')
@@ -47,9 +48,14 @@ export default function Unsubscribe() {
         {error && <div className="alert-error p-3 mb-4"><span>{error}</span></div>}
 
         <div className="flex flex-col gap-3">
-          <button onClick={handleUnsubscribe} className="btn-copper w-full" disabled={loading || !email}>
+          <button onClick={handleUnsubscribe} className="btn-copper w-full" disabled={loading || !email || !token}>
             {loading ? 'Unsubscribing...' : 'Unsubscribe'}
           </button>
+          {!token && (
+            <p className="text-sm" style={{ color: 'var(--color-mute)' }}>
+              This unsubscribe link is missing its signature. Please use the link from a recent email.
+            </p>
+          )}
           <Link to="/" className="btn-outline-ink w-full text-center text-sm">
             I changed my mind &mdash; stay subscribed
           </Link>

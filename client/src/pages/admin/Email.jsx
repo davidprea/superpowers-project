@@ -93,26 +93,33 @@ export default function AdminEmail() {
               {preview.recipients.length === 0 ? (
                 <p className="text-sm text-base-content/60">No subscribers match the selected tags.</p>
               ) : (
-                <div className="overflow-x-auto max-h-64 overflow-y-auto">
-                  <table className="table table-xs">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Organization</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {preview.recipients.map((r) => (
-                        <tr key={r.id}>
-                          <td>{r.first_name} {r.last_name}</td>
-                          <td>{r.email}</td>
-                          <td>{r.organization}</td>
+                <>
+                  {preview.recipient_count > preview.recipients.length && (
+                    <p className="text-sm text-base-content/60">
+                      Showing first {preview.recipients.length} of {preview.recipient_count}. All recipients will receive the email.
+                    </p>
+                  )}
+                  <div className="overflow-x-auto max-h-64 overflow-y-auto">
+                    <table className="table table-xs">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Organization</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {preview.recipients.map((r) => (
+                          <tr key={r.id}>
+                            <td>{r.first_name} {r.last_name}</td>
+                            <td>{r.email}</td>
+                            <td>{r.organization}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               )}
             </div>
           </div>
