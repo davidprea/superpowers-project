@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+import { NodeSelection } from '@tiptap/pm/state'
 import api from '../../services/api'
 
 const ResizableImage = Image.extend({
@@ -30,7 +31,31 @@ const ResizableImage = Image.extend({
           return { style: `width: ${attrs.width}px; height: auto` }
         },
       },
+      href: {
+        default: null,
+        parseHTML: (element) =>
+          element.parentElement?.tagName === 'A'
+            ? element.parentElement.getAttribute('href')
+            : null,
+        renderHTML: () => ({}),
+      },
     }
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    const img = ['img', HTMLAttributes]
+    if (node.attrs.href) {
+      return [
+        'a',
+        {
+          href: node.attrs.href,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          style: 'display: inline-block; line-height: 0',
+        },
+        img,
+      ]
+    }
+    return img
   },
 })
 
@@ -138,49 +163,83 @@ function ImageDialog({ onInsert, onClose }) {
   )
 }
 
-function ImageWidthControl({ editor }) {
-  const isImage = editor.isActive('image')
-  const currentWidth = isImage ? editor.getAttributes('image').width : null
-  const [val, setVal] = useState(currentWidth ? String(currentWidth) : '')
-  const [lastWidth, setLastWidth] = useState(currentWidth)
+function ImageEditDialog({ initial, onApply, onClose }) {
+  const [widthVal, setWidthVal] = useState(initial.width ? String(initial.width) : '')
+  const [hrefVal, setHrefVal] = useState(initial.href || '')
 
-  if (currentWidth !== lastWidth) {
-    setLastWidth(currentWidth)
-    setVal(currentWidth ? String(currentWidth) : '')
-  }
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
 
-  if (!isImage) return null
-
-  const apply = () => {
-    const trimmed = val.trim()
-    if (!trimmed) {
-      editor.chain().focus().updateAttributes('image', { width: null }).run()
-      return
+  const submit = (e) => {
+    e.preventDefault()
+    let width = null
+    const trimmedW = widthVal.trim()
+    if (trimmedW) {
+      const n = parseInt(trimmedW, 10)
+      if (Number.isFinite(n) && n > 0) width = n
     }
-    const n = parseInt(trimmed, 10)
-    if (!Number.isFinite(n) || n < 1) {
-      setVal(currentWidth ? String(currentWidth) : '')
-      return
+    let href = null
+    const trimmedH = hrefVal.trim()
+    if (trimmedH) {
+      href = /^https?:\/\//i.test(trimmedH) ? trimmedH : `https://${trimmedH}`
     }
-    editor.chain().focus().updateAttributes('image', { width: n }).run()
+    onApply({ width, href })
   }
 
   return (
-    <div className="flex items-center gap-2 ml-2 pl-3" style={{ borderLeft: '1px solid var(--color-rule)' }}>
-      <span className="meta-label">Width</span>
-      <input
-        type="number"
-        min="1"
-        value={val}
-        onChange={(e) => setVal(e.target.value)}
-        onBlur={apply}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') { e.preventDefault(); apply() }
-        }}
-        placeholder="auto"
-        style={{ width: '90px', height: '28px', padding: '0 8px', fontSize: '13px' }}
-      />
-      <span className="meta-label">px</span>
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 50,
+        background: 'rgba(27, 26, 23, 0.45)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '1rem',
+      }}
+    >
+      <form
+        onSubmit={submit}
+        onClick={(e) => e.stopPropagation()}
+        className="lab-card-light"
+        style={{ background: 'var(--color-paper)', width: '100%', maxWidth: '420px', padding: '24px' }}
+      >
+        <div className="flex justify-between items-baseline mb-5">
+          <h2 className="font-serif text-xl" style={{ color: 'var(--color-ink)' }}>Image Settings</h2>
+          <button type="button" onClick={onClose} className="tool-btn" aria-label="Close">×</button>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="meta-label mb-2">Width (px)</p>
+            <input
+              type="number"
+              min="1"
+              autoFocus
+              value={widthVal}
+              onChange={(e) => setWidthVal(e.target.value)}
+              placeholder="auto"
+              style={{ width: '100%', height: '32px', padding: '0 10px' }}
+            />
+          </div>
+          <div>
+            <p className="meta-label mb-2">Link URL (optional)</p>
+            <input
+              type="url"
+              value={hrefVal}
+              onChange={(e) => setHrefVal(e.target.value)}
+              placeholder="https://…"
+              style={{ width: '100%', height: '32px', padding: '0 10px' }}
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <button type="submit" className="btn-copper">Apply</button>
+          <button type="button" className="btn-outline-ink" onClick={onClose}>Cancel</button>
+        </div>
+      </form>
     </div>
   )
 }
@@ -216,7 +275,6 @@ function MenuBar({ editor }) {
         <button type="button" className={cls(editor.isActive('blockquote'))} onMouseDown={prevent} onClick={() => editor.chain().focus().toggleBlockquote().run()}>Quote</button>
         <button type="button" className={cls(editor.isActive('link'))} onMouseDown={prevent} onClick={addLink}>Link</button>
         <button type="button" className={cls(false)} onMouseDown={prevent} onClick={() => setImageDialogOpen(true)}>Image</button>
-        <ImageWidthControl editor={editor} />
       </div>
       {imageDialogOpen && (
         <ImageDialog onInsert={insertImage} onClose={() => setImageDialogOpen(false)} />
@@ -231,6 +289,7 @@ export default function BlogEdit() {
   const [title, setTitle] = useState('')
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(!!id)
+  const [imageEdit, setImageEdit] = useState(null)
   const isEdit = !!id
 
   const editor = useEditor({
@@ -244,8 +303,33 @@ export default function BlogEdit() {
       attributes: {
         class: 'prose max-w-none p-4 min-h-48 focus:outline-none',
       },
+      handleClickOn: (view, pos, node, nodePos, event) => {
+        if (node.type.name !== 'image') return false
+        event.preventDefault()
+        if (event.target.tagName !== 'IMG') return false
+        const tr = view.state.tr.setSelection(NodeSelection.create(view.state.doc, nodePos))
+        view.dispatch(tr)
+        setImageEdit({ pos: nodePos, attrs: { ...node.attrs } })
+        return true
+      },
     },
   })
+
+  const applyImageEdit = ({ width, href }) => {
+    if (!editor || !imageEdit) return
+    const node = editor.state.doc.nodeAt(imageEdit.pos)
+    if (!node || node.type.name !== 'image') {
+      setImageEdit(null)
+      return
+    }
+    const tr = editor.state.tr.setNodeMarkup(imageEdit.pos, undefined, {
+      ...node.attrs,
+      width,
+      href,
+    })
+    editor.view.dispatch(tr)
+    setImageEdit(null)
+  }
 
   useEffect(() => {
     if (id && editor) {
@@ -285,6 +369,13 @@ export default function BlogEdit() {
           <MenuBar editor={editor} />
           <EditorContent editor={editor} />
         </div>
+        {imageEdit && (
+          <ImageEditDialog
+            initial={imageEdit.attrs}
+            onApply={applyImageEdit}
+            onClose={() => setImageEdit(null)}
+          />
+        )}
         <div className="flex gap-3 mt-2">
           <button
             type="button"

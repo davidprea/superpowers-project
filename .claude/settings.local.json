@@ -22,7 +22,10 @@
       "Bash(jobs -p)",
       "Bash(xargs -r kill)",
       "Bash(wait)",
-      "Bash(grep -q \"^JWT_SECRET=your-secret-key-change-this$\" .env)"
+      "Bash(grep -q \"^JWT_SECRET=your-secret-key-change-this$\" .env)",
+      "Bash(git -C /Users/davidrea/Programming/superpowers-project log --oneline -20)",
+      "Bash(git -C /Users/davidrea/Programming/superpowers-project status)",
+      "Bash(git *)"
     ]
   }
 }
