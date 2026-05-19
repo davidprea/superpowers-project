@@ -37,8 +37,9 @@ export default function Home() {
     <div>
       <HeroSection
         title="The Superpowers Project"
-        subtitle="A coalition of educators pioneering AI-based student portfolio assessment"
+        subtitle="For learners to prepare for careers that AI can't take, they need teaching that AI can’t provide."
         backgroundImage={meshBg}
+        subtitleNoWrap
       >
         <div className="flex gap-4 justify-center mt-8">
           <Link to="/about" className="btn-copper">Learn More</Link>
